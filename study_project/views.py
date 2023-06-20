@@ -72,6 +72,15 @@ def home(request):
     
     return render(request, 'study_project/home.html', context)
 
+def topicPage(request):
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+    topics = Topic.objects.filter(name__icontains=q)
+    return render(request, 'study_project/topics.html', {'topics': topics})
+
+def activityPage(request):
+    room_messages = Message.objects.all()
+    return render(request, 'study_project/activity.html', {'room_messages': room_messages})
+
 def room(request, pk):
     room = Room.objects.get(id=pk)
     room_messages = room.message_set.all()
@@ -148,3 +157,28 @@ def deleteRoom(request, pk):
     
     return render(request, 'study_project/delete.html', {'obj': room})
 
+@login_required(login_url='login')
+def deleteMessage(request, pk):
+    message = Message.objects.get(id = pk)
+    
+    if request.user != message.user:
+        return HttpResponse('You are not allowed to delete this message')
+    
+    if request.method = 'POST':
+        message.delete()
+        return redirect('home')
+    
+    return render(request, 'study_project/delete.html', {'obj': message})
+
+@login_required(login_url='login')
+def updateUser(request, pk):
+    user = request.user
+    form = UserForm(instance = user)
+    
+    if request.method = 'POST':
+        form = UserForm(request.POST, request.FILES, instance = user)
+        if form.is_valid():
+            form.save()
+            return redirect('user-profile', pk=user.id)
+        
+    return render(request, 'study_project/update-user.html', {'form': form})

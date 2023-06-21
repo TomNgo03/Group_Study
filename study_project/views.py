@@ -33,7 +33,7 @@ def loginPage(request):
     context = {'page': page}
     return render(request, 'study_project/login_register.html', context)
 
-def logoutPage(request):
+def logoutUser(request):
     logout(request)
     return redirect('home')
 
@@ -56,7 +56,7 @@ def registerPage(request):
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     
-    rooms = Rooms.objects.filter(
+    rooms = Room.objects.filter(
         Q(topic__name__icontains=q) |
         Q(name__icontains=q) |
         Q(description__icontains=q)
@@ -65,14 +65,13 @@ def home(request):
     topics = Topic.objects.all()[0:10]
     room_count = rooms.count()
     rooms_messages = Message.objects.filter(
-        Q(room__topic__name__icontains=q)[0:5]
-    )
+        Q(room__topic__name__icontains=q))[0:5]
     
     context = {'rooms': rooms, 'topics': topics, 'room_count': room_count, 'rooms_messages': rooms_messages}
     
     return render(request, 'study_project/home.html', context)
 
-def topicPage(request):
+def topicsPage(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     topics = Topic.objects.filter(name__icontains=q)
     return render(request, 'study_project/topics.html', {'topics': topics})
@@ -113,10 +112,10 @@ def createRoom(request):
         topic, created = Topic.objects.get_or_create(name = topic_name)
         
         Room.objects.create(
-            host = request.user
-            topic = topic
-            name = request.POST.get('name')
-            description = request.POST.get('description')
+            host = request.user,
+            topic = topic,
+            name = request.POST.get('name'),
+            description = request.POST.get('description'),
         )
         return redirect('home')
     
@@ -151,7 +150,7 @@ def deleteRoom(request, pk):
     if request.user != room.host:
         return HttpResponse('You are not allowed to delete this room')
 
-    if request.method = 'POST':
+    if request.method == 'POST':
         room.delete()
         return redirect('home')
     
@@ -164,7 +163,7 @@ def deleteMessage(request, pk):
     if request.user != message.user:
         return HttpResponse('You are not allowed to delete this message')
     
-    if request.method = 'POST':
+    if request.method == 'POST':
         message.delete()
         return redirect('home')
     
@@ -175,7 +174,7 @@ def updateUser(request, pk):
     user = request.user
     form = UserForm(instance = user)
     
-    if request.method = 'POST':
+    if request.method == 'POST':
         form = UserForm(request.POST, request.FILES, instance = user)
         if form.is_valid():
             form.save()

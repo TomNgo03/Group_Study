@@ -10,7 +10,7 @@ from .forms import RoomForm, UserForm, MyUserCreationForm
 # Create your views here.
 def loginPage(request):
     page = 'login'
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return redirect('home')
     
     if request.method == 'POST':

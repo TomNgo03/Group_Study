@@ -1,0 +1,7 @@
+/* body{
+    background-color: aquamarine;
+} */
+
+body {
+    background-color: #e1f6fb; /* Using the --color-main-light value from the color scheme */
+  }

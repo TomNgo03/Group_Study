@@ -170,7 +170,7 @@ def deleteMessage(request, pk):
     return render(request, 'study_project/delete.html', {'obj': message})
 
 @login_required(login_url='login')
-def updateUser(request, pk):
+def updateUser(request):
     user = request.user
     form = UserForm(instance = user)
     

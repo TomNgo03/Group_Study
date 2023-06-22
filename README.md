@@ -13,7 +13,7 @@ The Study Group Assistant is a web application developed using Django framework 
 
 ## Project Overview
 
-The Study Group Assistant aims to enhance the learning experience by offering a virtual assistant that can answer queries related to various subjects and topics. It utilizes the OpenAI API, which leverages state-of-the-art natural language processing models to generate human-like responses.
+The StudyHub aims to enhance the learning experience by offering a virtual assistant that can answer queries related to various subjects and topics. It utilizes the OpenAI API, which leverages state-of-the-art natural language processing models to generate human-like responses.
 
 Key features of the Study Group Assistant project include:
 - Django-based web application for user interactions

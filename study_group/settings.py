@@ -39,10 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'study_project.apps.StudyProjectConfig',
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
 ]
 
-# AUTH_USER_MODEL = 'study_project.User'
+AUTH_USER_MODEL = 'study_project.User'
 
 
 MIDDLEWARE = [

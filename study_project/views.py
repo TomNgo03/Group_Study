@@ -20,7 +20,7 @@ def loginPage(request):
         try:
             user = User.objects.get(email=email)
         except:
-            message.error(request, 'User does not exist')
+            messages.error(request, 'User does not exist')
         
         user = authenticate(request, email=email, password=password)
         
@@ -85,20 +85,33 @@ def room(request, pk):
     room_messages = room.message_set.all()
     participants = room.participants.all()
     
+    # if request.method == 'POST':
+    #     message = Message.objects.create(
+    #         user = request.user,
+    #         room = room,
+    #         body = request.POST.get('body')
+    #     )
+    #     room.participants.add(request.user)
+    #     return render(request, 'study_project/room.html', context)
+    
     if request.method == 'POST':
         message = Message.objects.create(
-            user = request.user,
-            room = room,
-            body = request.POST.get('body')
+            user=request.user,
+            room=room,
+            body=request.POST.get('body')
         )
         room.participants.add(request.user)
-        return render(request, 'study_project/room.html', context)
+        return redirect('room', pk=room.id)
+
+    context = {'room': room, 'room_messages': room_messages,
+               'participants': participants}
+    return render(request, 'study_project/room.html', context)
     
 def userProfile(request, pk):
     user = User.objects.get(id=pk)
     rooms = user.room_set.all()
     rooms_messages = user.message_set.all()
-    topics = Topics.objects.all()
+    topics = Topic.objects.all()
     context = {'user': user, 'rooms': rooms, 'rooms_messages': rooms_messages, 'topics': topics}
     
     return render(request, 'study_project/profile.html', context)

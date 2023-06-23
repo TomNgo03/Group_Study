@@ -1,6 +1,6 @@
 # StudyHub - Study with me!
 
-The Study Group Assistant is a web application developed using Django framework that serves as an interactive study companion for users. It leverages the power of OpenAI API to provide a conversational interface where users can ask questions and receive responses from the AI-powered bot.
+The Study Hub is a web application developed using Django framework that serves as an interactive study companion for users. It leverages the power of OpenAI API to provide a conversational interface where users can ask questions and receive responses from the AI-powered bot.
 
 ## Table of Contents
 

@@ -220,3 +220,48 @@ def chatPage(request):
         chatbot_response = response['choices'][0]['text']
     return render(request, 'study_project/chat.html', {})
 
+@login_required(login_url='login')
+def taskList(request):
+    tasks = Task.objects.filter(user=request.user)
+    return render(request, 'study_project/task.html', {'tasks': tasks})
+
+@login_required(login_url='login')
+def taskDetail(request, pk):
+    task = get_object_or_404(Task, id=pk, user = request.user)
+    return render(request, 'study_project/task_detail.html', {'task': task})
+    
+@login_required(login_url='login')
+def createTask(request):
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit = False)
+            task.user = request.user
+            task.save()
+            return redirect('task_list')
+    else:
+        task = TaskForm()
+    return render(request, 'study_project/task_create.html', {'form': form})
+
+@login_required(login_url='login')
+def updateTask(request, pk):
+    task = get_object_or_404(Task, id=pk, user = request.user)
+    if request.method == 'POST':
+        form = TaskForm(request.POST, instance = task)
+        if form.is_valid():
+            form.save()
+            return redirect('task_list')
+    else:
+        form = TaskForm(instance = task)
+    
+    return render(request, 'study_project/task_update.html', {'form': form})
+    
+@login_required(login_url='login')
+def deleteTask(request, pk):
+    task = get_object_or_404(Task, id=pk, user = request.user)
+    if request.method == 'POST':
+        task.delete()
+        return redirect('task_list')
+    
+    return render(request, 'study_project/task_delete.html', {'obj': task})
+    

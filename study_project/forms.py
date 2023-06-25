@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
-from .models import Room, User
+from .models import Room, User, Task
 
 class MyUserCreationForm(UserCreationForm):
     class Meta:
@@ -17,4 +17,8 @@ class UserForm(ModelForm):
     class Meta:
         model = User
         fields = ['avatar', 'name', 'username', 'email', 'bio']
-    
+
+class TaskForm(ModelForm):
+    class Meta:
+        model = Task
+        fields = ['title', 'description']

@@ -23,8 +23,8 @@ urlpatterns = [
     
     # Task
     path('task_list/', views.taskList, name="task_list"),
-    path('task/<str:pk>/', views.taskDetail, name="task"),
+    path('task/<int:pk>/', views.taskDetail, name="task"),
     path('task/create/', views.createTask, name="task_create"),
-    path('task/update/<str:pk>/', views.updateTask, name="task_update"),
-    path('task/delete/<str:pk>/', views.deleteTask, name="task_delete"),
+    path('task/update/<int:pk>/', views.updateTask, name="task_update"),
+    path('task/delete/<int:pk>/', views.deleteTask, name="task_delete"),
 ]

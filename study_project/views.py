@@ -223,6 +223,7 @@ def chatPage(request):
 @login_required(login_url='login')
 def taskList(request):
     tasks = Task.objects.filter(user=request.user)
+    task_count = tasks.count()
     return render(request, 'study_project/task_list.html', {'tasks': tasks})
 
 @login_required(login_url='login')

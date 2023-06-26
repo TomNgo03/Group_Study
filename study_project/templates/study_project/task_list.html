@@ -1,0 +1,36 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<style>
+    .home-container {
+        display: grid;
+        grid-template-columns: 1fr 3fr 1fr;
+    }
+</style>
+
+
+<div class="home-container">
+
+    <div>
+        {% include 'study_project/topics_component.html' %}
+    </div>
+
+    <div>
+        <h5>{{task_count}} tasks left</h5>
+        <a href="{% url 'task_create' %}">Create Task</a>
+
+        {% include 'study_project/task.html' %}
+
+    </div>
+
+
+    <div>
+        {% include 'study_project/activity_component.html' %}
+    </div>
+
+
+
+</div>
+
+{% endblock content %}

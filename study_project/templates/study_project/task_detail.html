@@ -1,0 +1,43 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<main class="create-room layout">
+  <div class="container">
+    <div class="layout__box">
+      <div class="layout__boxHeader">
+        <div class="layout__boxTitle">
+          <a href="{{ request.META.HTTP_REFERER }}">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+              <title>arrow-left</title>
+              <path
+                d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
+              </path>
+            </svg>
+          </a>
+          <h3>Task Detail</h3>
+        </div>
+      </div>
+      <div class="layout__body">
+        <form class="form" action="{% url 'task_update' task.id %}" method="POST">
+          {% csrf_token %}
+
+          <div class="form__group">
+            <label for="task_title">Task Title</label>
+            <input type="text" id="task_title" name="title" value="{{ task.title }}">
+          </div>
+
+          <div class="form__group">
+            <label for="task_description">Task Description</label>
+            <textarea id="task_description" name="description">{{ task.description }}</textarea>
+          </div>
+
+          <div class="form__action">
+            <a class="btn btn--dark" href="{% url 'task_delete' task.id %}">Delete</a>
+            <button class="btn btn--main" type="submit">Update</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

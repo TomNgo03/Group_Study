@@ -20,4 +20,11 @@ urlpatterns = [
     path('topics/', views.topicsPage, name="topics"),
     path('activity/', views.activityPage, name="activity"),
     path('chat/', views.chatPage, name="chat"),
+    
+    # Task
+    path('task_list/', views.taskList, name="task_list"),
+    path('task_detail/<str:pk>/', views.taskDetail, name="task_detail"),
+    path('task/create/', views.createTask, name="task_create"),
+    path('task/update/<str:pk>/', views.updateTask, name="task_update"),
+    path('task/delete/<str:pk>/', views.deleteTask, name="task_delete"),
 ]

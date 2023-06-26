@@ -8,6 +8,7 @@ from .models import Room, Topic, Message, User, Task
 from .forms import RoomForm, UserForm, MyUserCreationForm, TaskForm
 import openai, os
 from dotenv import load_dotenv
+from django.shortcuts import get_object_or_404
 load_dotenv()
 
 api_key = os.getenv('OPENAI_KEY', None)
@@ -90,16 +91,7 @@ def room(request, pk):
     room = Room.objects.get(id=pk)
     room_messages = room.message_set.all()
     participants = room.participants.all()
-    
-    # if request.method == 'POST':
-    #     message = Message.objects.create(
-    #         user = request.user,
-    #         room = room,
-    #         body = request.POST.get('body')
-    #     )
-    #     room.participants.add(request.user)
-    #     return render(request, 'study_project/room.html', context)
-    
+       
     if request.method == 'POST':
         message = Message.objects.create(
             user=request.user,

@@ -4,8 +4,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
-from .models import Room, Topic, Message, User
-from .forms import RoomForm, UserForm, MyUserCreationForm
+from .models import Room, Topic, Message, User, Task
+from .forms import RoomForm, UserForm, MyUserCreationForm, TaskForm
 import openai, os
 from dotenv import load_dotenv
 load_dotenv()
@@ -232,6 +232,7 @@ def taskDetail(request, pk):
     
 @login_required(login_url='login')
 def createTask(request):
+    form = TaskForm()
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():

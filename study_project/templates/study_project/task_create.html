@@ -21,18 +21,6 @@
         <form class="form" action="" method="POST">
           {% csrf_token %}
 
-          {% comment %} <div class="form__group">
-            <label for="room_topic">Enter a Name</label>
-            <input required type="text" value="{{room.topic.name}}" name="topic" list="topic-list" />
-            <datalist id="topic-list">
-              <select id="room_topic">
-                {% for topic in topics %}
-                <option value="{{topic.name}}">{{topic.name}}</option>
-                {% endfor %}
-              </select>
-            </datalist>
-          </div> {% endcomment %}
-
           <div class="form__group">
             <label for="room_name">Task Title</label>
             {{form.title}}
@@ -41,6 +29,34 @@
           <div class="form__group">
             <label for="room_description">Task Description</label>
             {{form.description}}
+          </div>
+
+          <div class="form__group">
+            <label for="reminder_option">Reminder Option</label>
+            <select name="reminder_option" id="reminder_option">
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+            </select>
+          </div>
+
+          <div id="weekly-form" class="form__group form__group--hidden">
+            <label for="reminder_day">Day of the Week</label>
+            <input type="text" name="reminder_day" id="reminder_day">
+          </div>
+
+          <div id="monthly-form" class="form__group form__group--hidden">
+            <label for="reminder_date">Date of the Month</label>
+            <input type="number" name="reminder_date" id="reminder_date">
+          </div>
+
+          <div id="yearly-form" class="form__group form__group--hidden">
+            <label for="reminder_month">Month</label>
+            <input type="text" name="reminder_month" id="reminder_month">
+
+            <label for="reminder_date">Date</label>
+            <input type="number" name="reminder_date" id="reminder_date">
           </div>
 
           <div class="form__action">

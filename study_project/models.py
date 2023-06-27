@@ -72,7 +72,20 @@ class Task(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
-    
+
+    # Reminder options
+    REMINDER_CHOICES = (
+        ('daily', 'Daily'),
+        ('weekly', 'Weekly'),
+        ('monthly', 'Monthly'),
+        ('yearly', 'Yearly'),
+    )
+    reminder_option = models.CharField(max_length=20, choices=REMINDER_CHOICES, default= None, null=True, blank=True)
+    reminder_day = models.IntegerField(null=True, blank=True)
+    reminder_date = models.IntegerField(null=True, blank=True)
+    reminder_month = models.IntegerField(null=True, blank=True)
+
+
     class Meta:
         ordering = ['-created']
         

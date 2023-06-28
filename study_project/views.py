@@ -223,18 +223,41 @@ def taskDetail(request, pk):
     task = get_object_or_404(Task, id=pk, user = request.user)
     return render(request, 'study_project/task_detail.html', {'task': task})
     
+# @login_required(login_url='login')
+# def createTask(request):
+#     if request.method == 'POST':
+#         form = TaskForm(request.POST)
+#         if form.is_valid():
+#             task = form.save(commit = False)
+#             task.user = request.user
+#             task.save()
+#             return redirect('task_list')
+#     else:
+#         form = TaskForm()
+#     return render(request, 'study_project/task_create.html', {'form': form})
+
 @login_required(login_url='login')
 def createTask(request):
+    form = TaskForm()
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
-            task = form.save(commit = False)
+            task = form.save(commit=False)
             task.user = request.user
             task.save()
             return redirect('task_list')
-    else:
-        form = TaskForm()
     return render(request, 'study_project/task_create.html', {'form': form})
+
+# @login_required(login_url='login')
+# def createTask(request):
+#     form = TaskForm(request.POST or None)
+#     if request.method == 'POST':
+#         if form.is_valid():
+#             task = form.save(commit=False)
+#             task.user = request.user
+#             task.save()
+#             return redirect('task_list')
+#     return render(request, 'study_project/task_create.html', {'form': form})
 
 @login_required(login_url='login')
 def updateTask(request, pk):

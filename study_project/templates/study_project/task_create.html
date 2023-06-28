@@ -34,31 +34,26 @@
             {{ form.reminder_option }}
           </div>
 
-          {% if form.instance and form.instance.reminder_option == 'weekly' %}
-          <div class="form__group">
+          <div class="form__group" id="dayOfWeekGroup" style="display: none;">
             <label for="task_reminder_day">Day of the Week</label>
             {{ form.reminder_day }}
           </div>
-          {% endif %}
 
-          {% if form.instance and form.instance.reminder_option == 'monthly' %}
-          <div class="form__group">
+          <div class="form__group" id="dateOfMonthGroup" style="display: none;">
             <label for="task_reminder_date">Date of the Month</label>
             {{ form.reminder_date }}
           </div>
-          {% endif %}
 
-          {% if form.instance and form.instance.reminder_option == 'yearly' %}
-          <div class="form__group">
-            <label for="task_reminder_month">Month</label>
-            {{ form.reminder_month }}
+          <div class="form__group" id="yearlyGroup" style="display: none;">
+            <div class="form__group">
+              <label for="task_reminder_month">Month</label>
+              {{ form.reminder_month }}
+            </div>
+            <div class="form__group">
+              <label for="task_reminder_date">Date</label>
+              {{ form.reminder_date }}
+            </div>
           </div>
-
-          <div class="form__group">
-            <label for="task_reminder_date">Date</label>
-            {{ form.reminder_date }}
-          </div>
-          {% endif %}
 
           <div class="form__action">
             <a class="btn btn--dark" href="{{ request.META.HTTP_REFERER }}">Cancel</a>
@@ -69,4 +64,24 @@
     </div>
   </div>
 </main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var reminderOptionField = document.getElementById("id_reminder_option");
+    var dayOfWeekGroup = document.getElementById("dayOfWeekGroup");
+    var dateOfMonthGroup = document.getElementById("dateOfMonthGroup");
+    var yearlyGroup = document.getElementById("yearlyGroup");
+
+    function toggleReminderFields() {
+      var selectedOption = reminderOptionField.value;
+      dayOfWeekGroup.style.display = (selectedOption === "weekly") ? "block" : "none";
+      dateOfMonthGroup.style.display = (selectedOption === "monthly") ? "block" : "none";
+      yearlyGroup.style.display = (selectedOption === "yearly") ? "block" : "none";
+    }
+
+    reminderOptionField.addEventListener("change", toggleReminderFields);
+    toggleReminderFields();
+  });
+</script>
+
 {% endblock content %}

@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'corsheaders',
 ]
 
-AUTH_USER_MODEL = 'study_project.User'
+# AUTH_USER_MODEL = 'study_project.User'
 
 
 MIDDLEWARE = [

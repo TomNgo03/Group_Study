@@ -6,12 +6,10 @@
     <div class="layout__box">
       <div class="layout__boxHeader">
         <div class="layout__boxTitle">
-          <a href="{{request.META.HTTP_REFERER}}">
+          <a href="{{ request.META.HTTP_REFERER }}">
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
               <title>arrow-left</title>
-              <path
-                d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
-              </path>
+              <path d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z"></path>
             </svg>
           </a>
           <h3>Create Task</h3>
@@ -22,45 +20,48 @@
           {% csrf_token %}
 
           <div class="form__group">
-            <label for="room_name">Task Title</label>
-            {{form.title}}
+            <label for="task_title">Task Title</label>
+            {{ form.title }}
           </div>
 
           <div class="form__group">
-            <label for="room_description">Task Description</label>
-            {{form.description}}
+            <label for="task_description">Task Description</label>
+            {{ form.description }}
           </div>
 
           <div class="form__group">
-            <label for="reminder_option">Reminder Option</label>
-            <select name="reminder_option" id="reminder_option">
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-              <option value="yearly">Yearly</option>
-            </select>
+            <label for="task_reminder_option">Reminder Option</label>
+            {{ form.reminder_option }}
           </div>
 
-          <div id="weekly-form" class="form__group form__group--hidden">
-            <label for="reminder_day">Day of the Week</label>
-            <input type="text" name="reminder_day" id="reminder_day">
+          {% if form.instance and form.instance.reminder_option == 'weekly' %}
+          <div class="form__group">
+            <label for="task_reminder_day">Day of the Week</label>
+            {{ form.reminder_day }}
+          </div>
+          {% endif %}
+
+          {% if form.instance and form.instance.reminder_option == 'monthly' %}
+          <div class="form__group">
+            <label for="task_reminder_date">Date of the Month</label>
+            {{ form.reminder_date }}
+          </div>
+          {% endif %}
+
+          {% if form.instance and form.instance.reminder_option == 'yearly' %}
+          <div class="form__group">
+            <label for="task_reminder_month">Month</label>
+            {{ form.reminder_month }}
           </div>
 
-          <div id="monthly-form" class="form__group form__group--hidden">
-            <label for="reminder_date">Date of the Month</label>
-            <input type="number" name="reminder_date" id="reminder_date">
+          <div class="form__group">
+            <label for="task_reminder_date">Date</label>
+            {{ form.reminder_date }}
           </div>
-
-          <div id="yearly-form" class="form__group form__group--hidden">
-            <label for="reminder_month">Month</label>
-            <input type="text" name="reminder_month" id="reminder_month">
-
-            <label for="reminder_date">Date</label>
-            <input type="number" name="reminder_date" id="reminder_date">
-          </div>
+          {% endif %}
 
           <div class="form__action">
-            <a class="btn btn--dark" href="{{request.META.HTTP_REFERER}}">Cancel</a>
+            <a class="btn btn--dark" href="{{ request.META.HTTP_REFERER }}">Cancel</a>
             <button class="btn btn--main" type="submit">Submit</button>
           </div>
         </form>

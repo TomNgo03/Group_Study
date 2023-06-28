@@ -225,7 +225,6 @@ def taskDetail(request, pk):
     
 @login_required(login_url='login')
 def createTask(request):
-    form = TaskForm()
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
@@ -234,7 +233,7 @@ def createTask(request):
             task.save()
             return redirect('task_list')
     else:
-        task = TaskForm()
+        form = TaskForm()
     return render(request, 'study_project/task_create.html', {'form': form})
 
 @login_required(login_url='login')

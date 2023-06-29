@@ -270,7 +270,7 @@ def updateTask(request, pk):
     else:
         form = TaskForm(instance = task)
     
-    return render(request, 'study_project/task_update.html', {'form': form})
+    return render(request, 'study_project/task_update.html', {'form': form, 'task': task})
     
 @login_required(login_url='login')
 def deleteTask(request, pk):

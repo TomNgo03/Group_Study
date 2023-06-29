@@ -9,9 +9,7 @@
           <a href="{{ request.META.HTTP_REFERER }}">
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
               <title>arrow-left</title>
-              <path
-                d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
-              </path>
+              <path d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z"></path>
             </svg>
           </a>
           <h3>Task Detail</h3>
@@ -31,37 +29,36 @@
             <textarea id="task_description" name="description">{{ task.description }}</textarea>
           </div>
 
-          {% comment %} <div class="form__group">
+          <div class="form__group">
             <label for="task_reminder_option">Reminder Option</label>
             <select id="task_reminder_option" name="reminder_option">
+              <option value="daily" {% if task.reminder_option == 'daily' %}selected{% endif %}>Daily</option>
               <option value="weekly" {% if task.reminder_option == 'weekly' %}selected{% endif %}>Weekly</option>
               <option value="monthly" {% if task.reminder_option == 'monthly' %}selected{% endif %}>Monthly</option>
               <option value="yearly" {% if task.reminder_option == 'yearly' %}selected{% endif %}>Yearly</option>
             </select>
           </div>
 
-          <div class="form__group" id="dayOfWeekGroup" style="display: none;">
+          <div class="form__group" id="dayOfWeekGroup" {% if task.reminder_option != 'weekly' %}style="display: none;"{% endif %}>
             <label for="task_reminder_day">Day of the Week</label>
-            <input type="text" id ="task_reminder_day" name="reminder_day" value="{{ task.reminder_day }}">
+            <input type="text" id="task_reminder_day" name="reminder_day" value="{{ task.reminder_day }}">
           </div>
           
-          <div class="form__group" id="dateOfMonthGroup" style="display: none;">
+          <div class="form__group" id="dateOfMonthGroup" {% if task.reminder_option != 'monthly' %}style="display: none;"{% endif %}>
             <label for="task_reminder_date">Date of the Month</label>
-            <input type="text" id ="task_reminder_date" name="reminder_date" value="{{ task.reminder_date }}">
+            <input type="text" id="task_reminder_date" name="reminder_date" value="{{ task.reminder_date }}">
           </div>
 
-          <div class="form__group" id="yearlyGroup" style="display: none;">
+          <div class="form__group" id="yearlyGroup" {% if task.reminder_option != 'yearly' %}style="display: none;"{% endif %}>
             <div class="form__group">
               <label for="task_reminder_month">Month</label>
-              <input type="text" id ="task_reminder_month" name="reminder_month" value="{{ task.reminder_month }}">
+              <input type="text" id="task_reminder_month" name="reminder_month" value="{{ task.reminder_month }}">
             </div>
             <div class="form__group">
               <label for="task_reminder_yearly_date">Date</label>
-              <input type="text" id ="task_reminder_yearly_date" name="reminder_yearly_date" value="{{ task.reminder_yearly_date }}">
+              <input type="text" id="task_reminder_yearly_date" name="reminder_yearly_date" value="{{ task.reminder_yearly_date }}">
             </div>
-          </div> {% endcomment %}
-
-
+          </div>
 
           <div class="form__action">
             <a class="btn btn--dark" href="{% url 'task_delete' task.id %}">Delete</a>
@@ -73,9 +70,9 @@
   </div>
 </main>
 
-{% comment %} <script>
+<script>
   document.addEventListener("DOMContentLoaded", function() {
-    var reminderOptionField = document.getElementById("id_reminder_option");
+    var reminderOptionField = document.getElementById("task_reminder_option");
     var dayOfWeekGroup = document.getElementById("dayOfWeekGroup");
     var dateOfMonthGroup = document.getElementById("dateOfMonthGroup");
     var yearlyGroup = document.getElementById("yearlyGroup");
@@ -90,6 +87,7 @@
     reminderOptionField.addEventListener("change", toggleReminderFields);
     toggleReminderFields();
   });
-</script> {% endcomment %}
+</script>
 
 {% endblock %}
+

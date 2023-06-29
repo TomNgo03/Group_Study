@@ -39,7 +39,7 @@
             {{ form.reminder_day }}
           </div>
 
-          <div class="form__group" id="dateOfMonthGroup" style="display: none;">
+          {% comment %} <div class="form__group" id="dateOfMonthGroup" style="display: none;">
             <label for="task_reminder_date">Date</label>
             {{ form.reminder_date }}
           </div>
@@ -53,9 +53,9 @@
               <label for="task_reminder_date">Date</label>
               {{ form.reminder_date }}
             </div>
-          </div>
+          </div> {% endcomment %}
 
-          {% comment %} <div class="form__group" id="dateOfMonthGroup" style="display: none;">
+          <div class="form__group" id="dateOfMonthGroup" style="display: none;">
             <label for="task_reminder_date">Date of the Month</label>
             {{ form.reminder_date }}
           </div>
@@ -67,10 +67,10 @@
             </div>
             <div class="form__group">
               <label for="task_reminder_yearly_date">Date</label>
-              {{ form.reminder_date }}
+              {{ form.reminder_yearly_date }}
             </div>
-          </div> {% endcomment %}
-
+          </div>
+          
           <div class="form__action">
             <a class="btn btn--dark" href="{{ request.META.HTTP_REFERER }}">Cancel</a>
             <button class="btn btn--main" type="submit">Submit</button>

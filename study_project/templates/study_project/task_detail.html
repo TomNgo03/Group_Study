@@ -21,12 +21,12 @@
 
           <div class="form__group">
             <label for="task_title">Task Title</label>
-            <input type="text" id="task_title" name="title" value="{{ task.title }}">
+            <input type="text" id="task_title" name="title" placeholder="Enter task title" value="{{ task.title }}">
           </div>
 
           <div class="form__group">
             <label for="task_description">Task Description</label>
-            <textarea id="task_description" name="description">{{ task.description }}</textarea>
+            <textarea id="task_description" name="description" placeholder="Enter task description">{{ task.description }}</textarea>
           </div>
 
           <div class="form__group">
@@ -41,22 +41,22 @@
 
           <div class="form__group" id="dayOfWeekGroup" {% if task.reminder_option != 'weekly' %}style="display: none;"{% endif %}>
             <label for="task_reminder_day">Day of the Week</label>
-            <input type="text" id="task_reminder_day" name="reminder_day" value="{{ task.reminder_day }}">
+            <input type="text" id="task_reminder_day" name="reminder_day" placeholder="[Monday: 0, Tuesday: 1, Wednesday: 2,...]" value="{{ task.reminder_day }}">
           </div>
           
           <div class="form__group" id="dateOfMonthGroup" {% if task.reminder_option != 'monthly' %}style="display: none;"{% endif %}>
             <label for="task_reminder_date">Date of the Month</label>
-            <input type="text" id="task_reminder_date" name="reminder_date" value="{{ task.reminder_date }}">
+            <input type="text" id="task_reminder_date" name="reminder_date" placeholder="Enter a valid date from 1 to 31" value="{{ task.reminder_date }}">
           </div>
 
           <div class="form__group" id="yearlyGroup" {% if task.reminder_option != 'yearly' %}style="display: none;"{% endif %}>
             <div class="form__group">
               <label for="task_reminder_month">Month</label>
-              <input type="text" id="task_reminder_month" name="reminder_month" value="{{ task.reminder_month }}">
+              <input type="text" id="task_reminder_month" name="reminder_month" placeholder="Enter a valid month from 1 to 12" value="{{ task.reminder_month }}">
             </div>
             <div class="form__group">
               <label for="task_reminder_yearly_date">Date</label>
-              <input type="text" id="task_reminder_yearly_date" name="reminder_yearly_date" value="{{ task.reminder_yearly_date }}">
+              <input type="text" id="task_reminder_yearly_date" name="reminder_yearly_date" placeholder="Enter a valid date from 1 to 31" value="{{ task.reminder_yearly_date }}">
             </div>
           </div>
 

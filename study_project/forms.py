@@ -21,4 +21,4 @@ class UserForm(ModelForm):
 class TaskForm(ModelForm):
     class Meta:
         model = Task
-        fields = ['title', 'description', 'reminder_option', 'reminder_day', 'reminder_date', 'reminder_month']
+        fields = ['title', 'description', 'reminder_option', 'reminder_day', 'reminder_date', 'reminder_month', 'reminder_yearly_date']

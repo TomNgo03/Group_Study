@@ -84,6 +84,7 @@ class Task(models.Model):
     reminder_day = models.IntegerField(null=True, blank=True)
     reminder_date = models.IntegerField(null=True, blank=True)
     reminder_month = models.IntegerField(null=True, blank=True)
+    reminder_yearly_date = models.IntegerField(null=True, blank=True)
 
 
     class Meta:

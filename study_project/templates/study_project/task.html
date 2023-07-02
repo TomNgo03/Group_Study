@@ -1,10 +1,6 @@
 {% for task in tasks %}
 <div class="roomListRoom">
     <div class="roomListRoom__header">
-        {% comment %} <a href="{% url 'user-profile' room.host.id %}" class="roomListRoom__author"> {% endcomment %}
-            {% comment %} <div class="avatar avatar--small">
-                <img src="{{room.host.avatar.url}}" />
-            </div> {% endcomment %}
             <span>@{{task.title}}</span>
         </a>
         <div class="roomListRoom__actions">

@@ -279,24 +279,11 @@ def week_view(request):
         'week_days': week_days,
         'date_count': date_count
     })
-    
-# @login_required(login_url='login')
-# def day_tasks_view(request, day):
-#     tasks = Task.objects.filter(
-#         Q(reminder_option='daily') |
-#         Q(reminder_option='monthly', reminder_date=day.day) |
-#         Q(reminder_option='yearly', reminder_yearly_date=day.day, reminder_month=day.month)
-#     ).filter(user=request.user)
-    
-#     return render(request, 'study_project/day_tasks.html', {'tasks': tasks, 'day': day})
-
 
 @login_required(login_url='login')
 def day_tasks_view(request, day):
-    # Convert the day string to a datetime object
     date = datetime.strptime(day, '%Y-%m-%d').date()
 
-    # Filter tasks based on reminder options and user
     tasks = Task.objects.filter(
         Q(reminder_option='daily') |
         Q(reminder_option='weekly', reminder_day=date.weekday()) |

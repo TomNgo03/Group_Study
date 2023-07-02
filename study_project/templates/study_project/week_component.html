@@ -1,0 +1,16 @@
+<div class="topics">
+    <div class="topics__header">
+        <h2>Day in the Week</h2>
+    </div>
+    <ul class="topics__list">
+        <li>
+            <a href="{% url 'week_view' %}" class="active">All <span>{{ date_count }}</span></a>
+        </li>
+        {% for day in week_days %}
+        <li>
+            <a href="{% url 'home' %}?q={{ day|date:'Y-m-d' }}">{{ day|date:'D, d M Y' }}<span></span></a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+

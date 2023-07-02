@@ -27,4 +27,7 @@ urlpatterns = [
     path('task/create/', views.createTask, name="task_create"),
     path('task/update/<int:pk>/', views.updateTask, name="task_update"),
     path('task/delete/<int:pk>/', views.deleteTask, name="task_delete"),
+    
+    path('task_list/this_week', views.week_view, name="week_view"),
+    path('day/<str:day>/', views.day_tasks_view, name='day_tasks'),
 ]

@@ -1,0 +1,39 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<main class="create-room layout">
+  <div class="container">
+    <div class="layout__box">
+      <div class="layout__boxHeader">
+        <div class="layout__boxTitle">
+          <a href="{% url 'task_list' %}">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+              <title>arrow-left</title>
+              <path
+                d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
+              </path>
+            </svg>
+          </a>
+          <h3>Day in the Week</h3>
+        </div>
+      </div>
+
+      <div class="topics-page layout__body">
+
+        <ul class="topics__list">
+            <li>
+                <a href="{% url 'task_list' %}" class="active">All <span>{{ date_count }}</span></a>
+            </li>
+            {% for day in week_days %}
+            <li>
+                <a href="{% url 'day_tasks' day|date:'Y-m-d' %}">{{ day|date:'D, d M Y' }}<span></span></a>
+            </li>
+            {% endfor %}
+
+        </ul>
+      </div>
+    </div>
+  </div>
+</main>
+
+{% endblock content %}

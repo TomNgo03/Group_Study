@@ -44,6 +44,7 @@
             <input type="text" id="task_reminder_day" name="reminder_day" placeholder="[Monday: 0, Tuesday: 1, Wednesday: 2,...]" value="{{ task.reminder_day }}">
           </div>
           
+ 
           <div class="form__group" id="dateOfMonthGroup" {% if task.reminder_option != 'monthly' %}style="display: none;"{% endif %}>
             <label for="task_reminder_date">Date of the Month</label>
             <input type="text" id="task_reminder_date" name="reminder_date" placeholder="Enter a valid date from 1 to 31" value="{{ task.reminder_date }}">

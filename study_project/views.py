@@ -8,8 +8,10 @@ from .models import Room, Topic, Message, User, Task
 from .forms import RoomForm, UserForm, MyUserCreationForm, TaskForm
 import openai, os
 from dotenv import load_dotenv
+from datetime import date, timedelta, datetime
 from django.shortcuts import get_object_or_404
 load_dotenv()
+
 
 api_key = os.getenv('OPENAI_KEY', None)
 
@@ -223,18 +225,6 @@ def taskDetail(request, pk):
     task = get_object_or_404(Task, id=pk, user = request.user)
     return render(request, 'study_project/task_detail.html', {'task': task})
     
-# @login_required(login_url='login')
-# def createTask(request):
-#     if request.method == 'POST':
-#         form = TaskForm(request.POST)
-#         if form.is_valid():
-#             task = form.save(commit = False)
-#             task.user = request.user
-#             task.save()
-#             return redirect('task_list')
-#     else:
-#         form = TaskForm()
-#     return render(request, 'study_project/task_create.html', {'form': form})
 
 @login_required(login_url='login')
 def createTask(request):
@@ -248,16 +238,6 @@ def createTask(request):
             return redirect('task_list')
     return render(request, 'study_project/task_create.html', {'form': form})
 
-# @login_required(login_url='login')
-# def createTask(request):
-#     form = TaskForm(request.POST or None)
-#     if request.method == 'POST':
-#         if form.is_valid():
-#             task = form.save(commit=False)
-#             task.user = request.user
-#             task.save()
-#             return redirect('task_list')
-#     return render(request, 'study_project/task_create.html', {'form': form})
 
 @login_required(login_url='login')
 def updateTask(request, pk):
@@ -280,3 +260,48 @@ def deleteTask(request, pk):
         return redirect('task_list')
     
     return render(request, 'study_project/task_delete.html', {'obj': task})
+
+@login_required(login_url='login')
+def week_view(request):
+    current_date = date.today()
+
+    start_date = current_date - timedelta(days=current_date.weekday())
+    end_date = start_date + timedelta(days=6)
+
+    week_days = []
+    for i in range(7):
+        day = start_date + timedelta(days=i)
+        week_days.append(day)
+
+    date_count = len(week_days)
+    
+    return render(request, 'study_project/week.html', {
+        'week_days': week_days,
+        'date_count': date_count
+    })
+    
+# @login_required(login_url='login')
+# def day_tasks_view(request, day):
+#     tasks = Task.objects.filter(
+#         Q(reminder_option='daily') |
+#         Q(reminder_option='monthly', reminder_date=day.day) |
+#         Q(reminder_option='yearly', reminder_yearly_date=day.day, reminder_month=day.month)
+#     ).filter(user=request.user)
+    
+#     return render(request, 'study_project/day_tasks.html', {'tasks': tasks, 'day': day})
+
+
+@login_required(login_url='login')
+def day_tasks_view(request, day):
+    # Convert the day string to a datetime object
+    date = datetime.strptime(day, '%Y-%m-%d').date()
+
+    # Filter tasks based on reminder options and user
+    tasks = Task.objects.filter(
+        Q(reminder_option='daily') |
+        Q(reminder_option='weekly', reminder_day=date.weekday()) |
+        Q(reminder_option='monthly', reminder_date=date.day) |
+        Q(reminder_option='yearly', reminder_month=date.month, reminder_yearly_date=date.day)
+    ).filter(user=request.user)
+
+    return render(request, 'study_project/day_tasks.html', {'tasks': tasks, 'day': date})

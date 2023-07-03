@@ -13,6 +13,7 @@ from django.shortcuts import get_object_or_404
 from django.conf import settings
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
+from urllib.parse import urlencode
 load_dotenv()
 
 
@@ -296,4 +297,31 @@ def day_tasks_view(request, day):
 
     return render(request, 'study_project/day_tasks.html', {'tasks': tasks, 'day': date})
 
+# @login_required(login_url='login')
+# def google_calendar_tasks_view(request):
+#     # Get the user's access token from your authentication system
+#     access_token = request.user.google_access_token
+
+#     # Define the base URL for Google Calendar
+#     base_url = 'https://calendar.google.com/calendar'
+
+#     # Construct the query parameters for the URL
+#     params = {
+#         'cid': 'YOUR_CALENDAR_ID',  # Replace with the user's calendar ID
+#         'authuser': '0',  # Replace with the user's authenticated Google account index (0 for the first account)
+#         'ctz': 'UTC',  # Replace with the user's timezone
+#         'pli': '1',
+#         'mode': 'day',
+#         'dates': '20230628/20230628',  # Replace with the desired date range
+#         'tf': 'true',
+#         'gsessionid': '',
+#         'sf': 'true',
+#         'output': 'xml',
+#     }
+
+#     # Encode the query parameters and append them to the base URL
+#     url = f'{base_url}?{urlencode(params)}'
+
+#     # Redirect the user to the generated URL
+#     return redirect(url)
 

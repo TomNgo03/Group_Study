@@ -368,8 +368,8 @@ def day_tasks_view(request, day):
 def google_auth(request):
     flow = Flow.from_client_secrets_file(
         client_secrets_file=None,
-        client_id='680680792677-oii1sikqhab3fiab7vl409rcif30e6qq.apps.googleusercontent.com',
-        client_secret='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',
+        client_id='',
+        client_secret='',
         scopes=['https://www.googleapis.com/auth/calendar'],
         redirect_uri='http://localhost:8000/path/to/callback'
     )
@@ -415,8 +415,8 @@ def google_auth_callback(request):
 
     flow = Flow.from_client_secrets_file(
         client_secrets_file=None,
-        client_id='680680792677-oii1sikqhab3fiab7vl409rcif30e6qq.apps.googleusercontent.com',
-        client_secret='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',
+        client_id='',
+        client_secret='',
         scopes=['https://www.googleapis.com/auth/calendar'],
         redirect_uri='http://localhost:8000/path/to/callback'
     )

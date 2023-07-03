@@ -31,5 +31,9 @@ urlpatterns = [
     
     path('task_list/this_week', views.week_view, name="week_view"),
     path('day/<str:day>/', views.day_tasks_view, name='day_tasks'),
-    path('google-calendar-tasks/', views.google_calendar_tasks_view, name='google_calendar_tasks'),
+    # path('google-calendar-tasks/', views.google_calendar_tasks_view, name='google_calendar_tasks'),
+    
+    path('google-auth/', views.google_auth, name='google-auth'),
+    path('google-auth-callback/', views.google_auth_callback, name='google-auth-callback'),
+    path('google-calendar/', views.google_calendar_link, name='google_calendar_link'),
 ]

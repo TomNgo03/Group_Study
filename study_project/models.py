@@ -7,6 +7,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True, null=True)
     bio = models.TextField(null=True)
     google_access_token = models.CharField(max_length=255, blank=True, null=True)
+    google_credentials = models.TextField(null=True, blank=True)
 
 
     avatar = models.ImageField(null=True, default="avatar.svg")

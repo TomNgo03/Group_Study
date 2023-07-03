@@ -10,6 +10,9 @@ import openai, os
 from dotenv import load_dotenv
 from datetime import date, timedelta, datetime
 from django.shortcuts import get_object_or_404
+from django.conf import settings
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
 load_dotenv()
 
 
@@ -292,3 +295,5 @@ def day_tasks_view(request, day):
     ).filter(user=request.user)
 
     return render(request, 'study_project/day_tasks.html', {'tasks': tasks, 'day': date})
+
+

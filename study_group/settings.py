@@ -140,3 +140,9 @@ MEDIA_ROOT = BASE_DIR / 'static/images'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = True
+
+GOOGLE_CLIENT_ID = '680680792677-psl78ii7kk0c656mduhottnqvq44vd68.apps.googleusercontent.com'
+GOOGLE_CLIENT_SECRET = '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'
+GOOGLE_REDIRECT_URI = 'http://localhost:8000/google-auth/callback'
+
+GOOGLE_API_SCOPES = ['https://www.googleapis.com/auth/calendar']

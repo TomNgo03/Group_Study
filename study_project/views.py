@@ -21,6 +21,7 @@ from google.oauth2.credentials import Credentials
 from google.auth import default
 from google.auth.transport import requests
 from google.auth.exceptions import RefreshError
+from django.conf import settings
 load_dotenv()
 
 
@@ -304,121 +305,14 @@ def day_tasks_view(request, day):
 
     return render(request, 'study_project/day_tasks.html', {'tasks': tasks, 'day': date})
 
-# @login_required(login_url='login')
-# def google_calendar_tasks_view(request):
-#     access_token = request.user.google_access_token
-
-#     # Get the task data from your Django project
-#     tasks = Task.objects.filter(user=request.user)
-
-#     # Build the Google Calendar service
-#     credentials = AccessTokenCredentials(access_token, 'my-user-agent/1.0')
-#     service = build('calendar', 'v3', credentials=credentials, cache_discovery=False)
-
-#     for task in tasks:
-#         # Calculate the start and end dates for the event
-#         today = datetime.now().date()
-#         if task.reminder_option == 'daily':
-#             start_date = today + timedelta(days=task.reminder_day)
-#             end_date = start_date
-#         elif task.reminder_option == 'weekly':
-#             start_date = today + timedelta(weeks=task.reminder_week)
-#             end_date = start_date
-#         elif task.reminder_option == 'monthly':
-#             start_date = today.replace(day=task.reminder_date)
-#             end_date = start_date
-#         elif task.reminder_option == 'yearly':
-#             start_date = today.replace(day=task.reminder_date, month=task.reminder_month)
-#             end_date = start_date
-#         else:
-#             continue
-
-#         event = {
-#             'summary': task.title,
-#             'description': task.description,
-#             'start': {'date': start_date.strftime('%Y-%m-%d')},
-#             'end': {'date': end_date.strftime('%Y-%m-%d')},
-#         }
-#         created_event = service.events().insert(calendarId='primary', body=event).execute()
-
-#     return redirect('https://calendar.google.com/calendar/r/day')
-
-# @login_required(login_url='login')
-# def google_auth(request):
-#     # Create the authorization flow
-#     flow = Flow.from_client_secrets_file(
-#         'path/to/client_secrets.json',
-#         scopes=['https://www.googleapis.com/auth/calendar'],
-#         redirect_uri='http://localhost:8000/path/to/callback'
-#     )
-
-#     # Generate the authorization URL
-#     authorization_url, state = flow.authorization_url(
-#         access_type='offline',
-#         include_granted_scopes='true'
-#     )
-
-#     # Store the state in the session for later verification
-#     request.session['google_auth_state'] = state
-
-#     # Redirect the user to the authorization URL
-#     return redirect(authorization_url)
-
-@login_required(login_url='login')
-def google_auth(request):
-    flow = Flow.from_client_secrets_file(
-        client_secrets_file=None,
-        client_id= CLIENT_ID,
-        client_secret= CLIENT_SECRET,
-        scopes=['https://www.googleapis.com/auth/calendar'],
-        redirect_uri='http://localhost:8000/path/to/callback'
-    )
-
-    authorization_url, state = flow.authorization_url(
-        access_type='offline',
-        include_granted_scopes='true'
-    )
-
-    # Store the state in the session for later verification
-    request.session['google_auth_state'] = state
-
-    return redirect(authorization_url)
-
-# def google_auth_callback(request):
-#     # Verify the state to prevent cross-site request forgery
-#     state = request.GET.get('state')
-#     if state != request.session.get('google_auth_state'):
-#         return redirect('error-page')  # Replace 'error-page' with your error page URL
-
-#     # Create the authorization flow
-#     flow = Flow.from_client_secrets_file(
-#         'path/to/client_secrets.json',
-#         scopes=['https://www.googleapis.com/auth/calendar'],
-#         redirect_uri='http://localhost:8000/path/to/callback'
-#     )
-
-#     # Exchange the authorization code for an access token and refresh token
-#     flow.fetch_token(authorization_response=request.build_absolute_uri())
-
-#     # Store the access token and refresh token in the user's session or database
-#     access_token = flow.credentials.token
-#     refresh_token = flow.credentials.refresh_token
-
-#     # Associate the access token and refresh token with the current user in your database
-
-#     # Redirect the user to a success page
-#     return redirect('success-page')  # Replace 'success-page' with your success page URL
-
 @login_required(login_url='login')
 def google_auth_callback(request):
     state = request.session.get('google_auth_state', None)
 
     flow = Flow.from_client_secrets_file(
-        client_secrets_file=None,
-        client_id= CLIENT_ID,
-        client_secret= CLIENT_SECRET,
+        client_secrets_file=str(settings.BASE_DIR / 'secrets/client_secrets.json'),
         scopes=['https://www.googleapis.com/auth/calendar'],
-        redirect_uri='http://localhost:8000/path/to/callback'
+        redirect_uri=request.build_absolute_uri('/google-auth-callback/')
     )
 
     flow.fetch_token(
@@ -436,45 +330,31 @@ def google_auth_callback(request):
     # Redirect the user to the desired page after authentication
     return redirect('home')  # Replace 'home' with the appropriate URL name
 
-# @login_required(login_url='login')
-# def create_google_calendar_event(user, event_title, event_description, start_datetime, end_datetime):
-#     # Retrieve the user's stored credentials from the database
-#     credentials = Credentials.from_json(user.google_credentials)
+@login_required(login_url='login')
+def google_auth(request):
+    flow = Flow.from_client_secrets_file(
+        client_secrets_file=str(settings.BASE_DIR / 'secrets/client_secrets.json'),
+        scopes=['https://www.googleapis.com/auth/calendar'],
+        redirect_uri=request.build_absolute_uri('/google-auth-callback/')
+    )
 
-#     # Build the Google Calendar service
-#     service = build('calendar', 'v3', credentials=credentials)
+    authorization_url, state = flow.authorization_url(
+        access_type='offline',
+        include_granted_scopes='true'
+    )
 
-#     # Create the event body
-#     event = {
-#         'summary': event_title,
-#         'description': event_description,
-#         'start': {
-#             'dateTime': start_datetime.isoformat(),
-#             'timeZone': 'YOUR_TIME_ZONE',  # Replace with the appropriate time zone
-#         },
-#         'end': {
-#             'dateTime': end_datetime.isoformat(),
-#             'timeZone': 'YOUR_TIME_ZONE',  # Replace with the appropriate time zone
-#         },
-#     }
+    # Store the state in the session for later verification
+    request.session['google_auth_state'] = state
 
-#     # Call the API to create the event
-#     calendar_id = 'primary'  # Use 'primary' for the user's primary calendar
-#     event = service.events().insert(calendarId=calendar_id, body=event).execute()
-
-#     # Optionally, you can retrieve the created event ID if needed
-#     event_id = event['id']
-
-#     # Return the event ID or perform any additional logic as needed
-#     return event_id
+    return redirect(authorization_url)
 
 @login_required(login_url='login')
-def sync_tasks_with_google_calendar(user):
+def sync_tasks_with_google_calendar(request):
     # Retrieve the tasks from the database
-    tasks = Task.objects.filter(user=user)
+    tasks = Task.objects.filter(user=request.user)
 
     # Load the user's Google credentials
-    google_credentials = Credentials.from_authorized_user_info(user.google_credentials, scopes=['https://www.googleapis.com/auth/calendar.events'])
+    google_credentials = Credentials.from_authorized_user_info(request.user.google_credentials, scopes=['https://www.googleapis.com/auth/calendar.events'])
 
     # Check if the credentials are expired and refresh if necessary
     if google_credentials.expired and google_credentials.refresh_token:
@@ -515,14 +395,14 @@ def sync_tasks_with_google_calendar(user):
 
         # Create the event in Google Calendar
         event = {
-            'summary': event_title,
-            'description': event_description,
+            'summary': title,
+            'description': description,
             'start': {
-                'date': start_date,  # Use 'date' instead of 'dateTime' for an all-day event
+                'dateTime': start_datetime.isoformat(),
                 'timeZone': 'Asia/Ho_Chi_Minh',
             },
             'end': {
-                'date': end_date,  # Use 'date' instead of 'dateTime' for an all-day event
+                'dateTime': end_datetime.isoformat(),
                 'timeZone': 'Asia/Ho_Chi_Minh',
             },
         }
@@ -530,46 +410,20 @@ def sync_tasks_with_google_calendar(user):
         # Call the Google Calendar API to create the event
         service.events().insert(calendarId='primary', body=event).execute()
 
-# @login_required(login_url='login')
-# def google_calendar_link(request):
-#     # Retrieve the user's stored credentials from the database
-#     credentials = Credentials.from_json(request.user.google_credentials)
-
-#     try:
-#         # Check if the credentials have expired and refresh them if needed
-#         credentials.refresh(requests.Request())
-
-#         # Get the user's email address
-#         email = credentials.id_token['email']
-
-#         # Generate the Google Calendar link
-#         calendar_link = f"https://calendar.google.com/calendar/r?cid={email}"
-
-#         # Redirect the user to the Google Calendar link
-#         return redirect(calendar_link)
-#     except RefreshError:
-#         # Handle the case where the credentials have expired
-#         # You can redirect the user to the Google OAuth flow to re-authenticate
-#         return redirect('google_auth_url')
-
 @login_required(login_url='login')
 def google_calendar_link(request):
-    # Retrieve the user's stored credentials from the database
-    credentials = Credentials.from_authorized_user_info(request.user.google_credentials)
+    credentials = request.user.google_credentials
 
-    try:
-        # Check if the credentials have expired and refresh them if needed
-        credentials.refresh(requests.Request())
+    if credentials:
+        try:
+            credentials = Credentials.from_authorized_user_info(credentials)
+            credentials.refresh(requests.Request())
 
-        # Get the user's email address
-        email = credentials.id_token['email']
+            email = credentials.id_token['email']
+            calendar_link = f"https://calendar.google.com/calendar/r?cid={email}"
 
-        # Generate the Google Calendar link
-        calendar_link = f"https://calendar.google.com/calendar/r?cid={email}"
-
-        # Redirect the user to the Google Calendar link
-        return redirect(calendar_link)
-    except RefreshError:
-        # Handle the case where the credentials have expired
-        # You can redirect the user to the Google OAuth flow to re-authenticate
-        return redirect('google_auth_url')
+            return redirect(calendar_link)
+        except RefreshError:
+            return redirect('google_auth')  # Replace with the correct URL name for the Google OAuth flow
+    else:
+        return redirect('google_auth')  # Replace with the correct URL name for the Google OAuth flow

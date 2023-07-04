@@ -22,6 +22,7 @@ from google.auth import default
 from google.auth.transport import requests
 from google.auth.exceptions import RefreshError
 from django.conf import settings
+import json
 load_dotenv()
 
 
@@ -348,13 +349,78 @@ def google_auth(request):
 
     return redirect(authorization_url)
 
+# @login_required(login_url='login')
+# def sync_tasks_with_google_calendar(request):
+#     # Retrieve the tasks from the database
+#     tasks = Task.objects.filter(user=request.user)
+
+#     # Load the user's Google credentials
+#     google_credentials = Credentials.from_authorized_user_info(request.user.google_credentials, scopes=['https://www.googleapis.com/auth/calendar.events'])
+
+#     # Check if the credentials are expired and refresh if necessary
+#     if google_credentials.expired and google_credentials.refresh_token:
+#         google_credentials.refresh(Request())
+
+#     # Build the Google Calendar service
+#     service = build('calendar', 'v3', credentials=google_credentials)
+
+#     # Iterate over the tasks
+#     for task in tasks:
+#         # Extract task details
+#         title = task.title
+#         description = task.description
+#         reminder_option = task.reminder_option
+#         reminder_day = task.reminder_day
+#         reminder_date = task.reminder_date
+#         reminder_month = task.reminder_month
+#         reminder_yearly_date = task.reminder_yearly_date
+
+#         # Determine the reminder datetime based on the reminder_option
+#         reminder_datetime = None
+#         if reminder_option == 'daily':
+#             # Set the reminder to occur every day
+#             reminder_datetime = datetime.now()
+#         elif reminder_option == 'weekly':
+#             # Set the reminder to occur every week on the specified day
+#             reminder_datetime = datetime.now() + timedelta(days=reminder_day)
+#         elif reminder_option == 'monthly':
+#             # Set the reminder to occur every month on the specified date
+#             reminder_datetime = datetime.now().replace(day=reminder_date)
+#         elif reminder_option == 'yearly':
+#             # Set the reminder to occur every year on the specified month and date
+#             reminder_datetime = datetime.now().replace(month=reminder_month, day=reminder_yearly_date)
+
+#         # Create the event start and end datetime
+#         start_datetime = reminder_datetime
+#         end_datetime = start_datetime + timedelta(days=1)  # Assuming the event duration is 1 day
+
+#         # Create the event in Google Calendar
+#         event = {
+#             'summary': title,
+#             'description': description,
+#             'start': {
+#                 'dateTime': start_datetime.isoformat(),
+#                 'timeZone': 'Asia/Ho_Chi_Minh',
+#             },
+#             'end': {
+#                 'dateTime': end_datetime.isoformat(),
+#                 'timeZone': 'Asia/Ho_Chi_Minh',
+#             },
+#         }
+
+#         # Call the Google Calendar API to create the event
+#         service.events().insert(calendarId='primary', body=event).execute()
+
 @login_required(login_url='login')
 def sync_tasks_with_google_calendar(request):
     # Retrieve the tasks from the database
     tasks = Task.objects.filter(user=request.user)
 
     # Load the user's Google credentials
-    google_credentials = Credentials.from_authorized_user_info(request.user.google_credentials, scopes=['https://www.googleapis.com/auth/calendar.events'])
+    google_credentials = Credentials.from_authorized_user_info(
+        request.user.google_credentials,
+        scopes=['https://www.googleapis.com/auth/calendar.events']
+    )
 
     # Check if the credentials are expired and refresh if necessary
     if google_credentials.expired and google_credentials.refresh_token:
@@ -407,19 +473,28 @@ def sync_tasks_with_google_calendar(request):
             },
         }
 
-        # Call the Google Calendar API to create the event
-        service.events().insert(calendarId='primary', body=event).execute()
+        try:
+            # Call the Google Calendar API to create the event
+            service.events().insert(calendarId='primary', body=event).execute()
+        except Exception as e:
+            # Log the error or print the exception message for debugging
+            print(f"An error occurred while creating the event: {str(e)}")
+
+    # Redirect to a success page or return a response
+    return HttpResponse("Tasks synchronized with Google Calendar successfully!")
+
 
 @login_required(login_url='login')
 def google_calendar_link(request):
-    credentials = request.user.google_credentials
+    credentials_json = request.user.google_credentials
 
-    if credentials:
+    if credentials_json is not None:
         try:
-            credentials = Credentials.from_authorized_user_info(credentials)
-            credentials.refresh(requests.Request())
+            credentials = Credentials.from_authorized_user_info(json.loads(credentials_json))
+            credentials.refresh(Request())
 
-            email = credentials.id_token['email']
+            # email = credentials.id_token['email']
+            email = request.user.email
             calendar_link = f"https://calendar.google.com/calendar/r?cid={email}"
 
             return redirect(calendar_link)

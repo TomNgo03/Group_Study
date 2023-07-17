@@ -36,5 +36,32 @@ class LogoutUserTestCase(TestCase):
         response = self.client.get(self.logout_url)
         self.assertRedirects(response, reverse('home'))
         
+class RegisterPageTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.register_url = reverse('register')
+        self.valid_data = {
+            'email': 'test@example.com',
+            'password1': 'password',
+            'password2': 'password'
+        }
+        self.invalid_data = {
+            'email': 'test@example.com',
+            'password1': 'password',
+            'password2': 'wrong_password'
+        }
 
+    def test_register_page(self):
+        response = self.client.get(self.register_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'study_project/login_register.html')
+
+    def test_register_valid_data(self):
+        response = self.client.post(self.register_url, self.valid_data)
+        self.assertRedirects(response, reverse('home'))
+
+    def test_register_invalid_data(self):
+        response = self.client.post(self.register_url, self.invalid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'study_project/login_register.html')
         

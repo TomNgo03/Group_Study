@@ -5,6 +5,8 @@ from .models import User
 
 # Create your tests here.
 
+########## User Test ###########
+
 class LoginPageTestCase(TestCase):
     def setUp(self):
         self.client = Client()
@@ -65,6 +67,8 @@ class RegisterPageTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'study_project/login_register.html')
 
+############ Room Test #########################
+
 class CreateRoomTestCase(TestCase):
     def setUp(self):
         self.client = Client()
@@ -93,3 +97,38 @@ class CreateRoomTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'study_project/room_form.html')
         
+class UpdateRoomTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(email='test@example.com', password='password')
+        self.topic = Topic.objects.create(name='Test Topic')
+        self.room = Room.objects.create(host=self.user, topic=self.topic, name='Test Room', description='Test Room Description')
+        self.update_room_url = reverse('update_room', args=[self.room.pk])
+        self.valid_data = {
+            'topic': 'Updated Topic',
+            'name': 'Updated Room',
+            'description': 'Updated Room Description',
+        }
+
+    def test_update_room_authenticated_user(self):
+        self.client.login(email='test@example.com', password='password')
+        response = self.client.post(self.update_room_url, self.valid_data)
+        self.assertRedirects(response, reverse('home'))
+
+    def test_update_room_unauthenticated_user(self):
+        response = self.client.post(self.update_room_url, self.valid_data)
+        self.assertRedirects(response, reverse('login') + '?next=' + self.update_room_url)
+
+    def test_update_room_invalid_data(self):
+        self.client.login(email='test@example.com', password='password')
+        invalid_data = {'topic': '', 'name': '', 'description': ''}
+        response = self.client.post(self.update_room_url, invalid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'study_project/room_form.html')
+
+    def test_update_room_unauthorized_user(self):
+        user2 = User.objects.create_user(email='user2@example.com', password='password')
+        self.client.login(email='user2@example.com', password='password')
+        response = self.client.post(self.update_room_url, self.valid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'You are not allowed to update this room')

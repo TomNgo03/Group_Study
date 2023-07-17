@@ -25,4 +25,16 @@ class LoginPageTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'study_project/login_register.html')
         
+class LogoutUserTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.logout_url = reverse('logout')
+        self.user = User.objects.create_user(email='test@example.com', password='password')
+        
+    def test_logout_user(self):
+        self.client.login(email='test@example.com', password='password')
+        response = self.client.get(self.logout_url)
+        self.assertRedirects(response, reverse('home'))
+        
+
         

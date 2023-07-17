@@ -132,3 +132,30 @@ class UpdateRoomTestCase(TestCase):
         response = self.client.post(self.update_room_url, self.valid_data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'You are not allowed to update this room')
+        
+class DeleteRoomTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(email='test@example.com', password='password')
+        self.topic = Topic.objects.create(name='Test Topic')
+        self.room = Room.objects.create(host=self.user, topic=self.topic, name='Test Room', description='Test Room Description')
+        self.delete_room_url = reverse('delete_room', args=[self.room.pk])
+
+    def test_delete_room_authenticated_user(self):
+        self.client.login(email='test@example.com', password='password')
+        response = self.client.post(self.delete_room_url)
+        self.assertRedirects(response, reverse('home'))
+        self.assertFalse(Room.objects.filter(pk=self.room.pk).exists())
+
+    def test_delete_room_unauthenticated_user(self):
+        response = self.client.post(self.delete_room_url)
+        self.assertRedirects(response, reverse('login') + '?next=' + self.delete_room_url)
+        self.assertTrue(Room.objects.filter(pk=self.room.pk).exists())
+
+    def test_delete_room_unauthorized_user(self):
+        user2 = User.objects.create_user(email='user2@example.com', password='password')
+        self.client.login(email='user2@example.com', password='password')
+        response = self.client.post(self.delete_room_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'You are not allowed to delete this room')
+        self.assertTrue(Room.objects.filter(pk=self.room.pk).exists())

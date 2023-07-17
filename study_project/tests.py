@@ -64,4 +64,32 @@ class RegisterPageTestCase(TestCase):
         response = self.client.post(self.register_url, self.invalid_data)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'study_project/login_register.html')
+
+class CreateRoomTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(email='test@example.com', password='password')
+        self.topic = Topic.objects.create(name='Test Topic')
+        self.create_room_url = reverse('create_room')
+        self.valid_data = {
+            'topic': self.topic.name,
+            'name': 'Test Room',
+            'description': 'Test Room Description',
+        }
+
+    def test_create_room_authenticated_user(self):
+        self.client.login(email='test@example.com', password='password')
+        response = self.client.post(self.create_room_url, self.valid_data)
+        self.assertRedirects(response, reverse('home'))
+
+    def test_create_room_unauthenticated_user(self):
+        response = self.client.post(self.create_room_url, self.valid_data)
+        self.assertRedirects(response, reverse('login') + '?next=' + self.create_room_url)
+
+    def test_create_room_invalid_data(self):
+        self.client.login(email='test@example.com', password='password')
+        invalid_data = {'topic': '', 'name': '', 'description': ''}
+        response = self.client.post(self.create_room_url, invalid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'study_project/room_form.html')
         

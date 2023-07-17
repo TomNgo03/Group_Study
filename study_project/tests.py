@@ -159,3 +159,28 @@ class DeleteRoomTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'You are not allowed to delete this room')
         self.assertTrue(Room.objects.filter(pk=self.room.pk).exists())
+        
+        
+class DeleteTaskTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(email='test@example.com', password='password')
+        self.task = Task.objects.create(title='Test Task', description='Test Task Description', user=self.user)
+        self.delete_task_url = reverse('delete_task', args=[self.task.pk])
+
+    def test_delete_task_authenticated_user(self):
+        self.client.login(email='test@example.com', password='password')
+        response = self.client.post(self.delete_task_url)
+        self.assertRedirects(response, reverse('task_list'))
+        self.assertFalse(Task.objects.filter(pk=self.task.pk).exists())
+
+    def test_delete_task_unauthenticated_user(self):
+        response = self.client.post(self.delete_task_url)
+        self.assertRedirects(response, reverse('login') + '?next=' + self.delete_task_url)
+        self.assertTrue(Task.objects.filter(pk=self.task.pk).exists())
+
+    def test_delete_task_unauthorized_user(self):
+        user2 = User.objects.create_user(email='user2@example.com', password='password')
+        self.client.login(email='user2@example.com', password='password')
+        response = self.client.post(self.delete_task_url)
+        self.assertEqual(response.status_code, 404)

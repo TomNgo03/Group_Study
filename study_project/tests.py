@@ -66,6 +66,25 @@ class RegisterPageTestCase(TestCase):
         response = self.client.post(self.register_url, self.invalid_data)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'study_project/login_register.html')
+        
+class UserProfileTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(email='test@example.com', password='password')
+        self.room = Room.objects.create(name='Test Room')
+        self.message = Message.objects.create(user=self.user, room=self.room, body='Test Message')
+        self.topic = Topic.objects.create(name='Test Topic')
+        self.user_profile_url = reverse('user_profile', args=[self.user.pk])
+
+    def test_user_profile_authenticated_user(self):
+        self.client.login(email='test@example.com', password='password')
+        response = self.client.get(self.user_profile_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'study_project/profile.html')
+
+    def test_user_profile_unauthenticated_user(self):
+        response = self.client.get(self.user_profile_url)
+        self.assertRedirects(response, reverse('login') + '?next=' + self.user_profile_url)
 
 ############ Room Test #########################
 

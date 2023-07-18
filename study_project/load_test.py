@@ -31,4 +31,22 @@ class MyUser(HttpUser):
     
     @task
     def delete_room(self):
-        self.client.post('/delete-room/1/') 
+        self.client.post('/delete-room/1/')
+        
+class MyUser(HttpUser):
+    wait_time = between(1, 2)
+
+    @task
+    def chat_page(self):
+        chat_data = {
+            'user_input': 'Hello',
+        }
+        self.client.post('/chat-page/', json=chat_data)
+        
+
+class MyUser(HttpUser):
+    wait_time = between(1, 2) 
+
+    @task
+    def google_auth_callback(self):
+        self.client.get('/google-auth-callback/')
